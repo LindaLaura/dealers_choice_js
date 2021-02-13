@@ -38,6 +38,46 @@ app.get('/',  async(req, res, next)=> {
     }
 });
 
+
+app.get('/makers/:id',  async(req, res, next)=> {
+    try{
+        const promises = [client.query('SELECT * FROM makers WHERE id=$1;' , [req.params.id]),
+                          client.query('SELECT * FROM models WHERE makersId=$1;' , [req.params.id])
+                         ];
+
+        const [makersResponse, modelsResponse]= await Promise.all(promises);
+
+        const maker = makersResponse.rows[0];
+        const models = modelsResponse.rows;
+
+        res.send(`
+            <html>
+                <head>
+                <link rel ='stylesheet' href='/public/styles.css' />
+                </head>
+                <body>
+                    <h1> Cars World </h1>
+                    <h2><a href='/'>Brands</a> (${maker.name})</h2>
+                    <ul>
+                        ${
+                            models.map( model => `
+                                <li>
+                                    ${
+                                        model.name
+                                    }
+                                </li>
+                            `).join('')
+                        }
+                    </ul>
+                </body>
+            </html>
+        `);
+    }
+    catch(ex){
+        next(ex);
+    }
+});
+
 const port = process.env.PORT || 1337;
 
 

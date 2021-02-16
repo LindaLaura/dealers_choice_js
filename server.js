@@ -10,15 +10,19 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 app.get('/',  async(req, res, next)=> {
     try{
         const response = await client.query('SELECT * FROM makers;');
+
+
         const makers= response.rows;
+
+
         res.send(`
             <html>
                 <head>
                 <link rel ='stylesheet' href='/public/styles.css' />
                 </head>
                 <body>
-                    <h1> Cars World </h1>
-                    <h2> Brands</h2>
+                <h1> Welcome to the cars's world!!! </h1>
+                    <h2> Brands </h2>
                     <ul>
                         ${
                             makers.map(makers => `
@@ -57,7 +61,7 @@ app.get('/makers/:id',  async(req, res, next)=> {
                 </head>
                 <body>
                     <h1> Cars World </h1>
-                    <h2><a href='/'>Brands</a> (${maker.name})</h2>
+                    <h2><a href='/'> Brand </a> (${maker.name})</h2>
                     <ul>
                         ${
                             models.map( model => `
